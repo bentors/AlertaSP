@@ -2,7 +2,7 @@
 from pathlib import Path
 from zipfile import ZipFile
 import unicodedata
-import pandas as pd 
+import pandas as pd
 
 
 BASE = Path(__file__).resolve().parents[1]
