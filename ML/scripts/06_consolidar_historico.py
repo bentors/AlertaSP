@@ -18,7 +18,7 @@ ANOS_BASE = range(2022, 2027)
 ANOS_DOWNLOAD = range(2021, 2027)
 ESTACOES = ["A701", "A771"]
 
-SAIDA = PROCESSADOS / "base_diaria_2022_2025.csv"
+SAIDA = PROCESSADOS / "base_diaria_2022_2026.csv"
 
 
 def normalizar(texto):
@@ -200,7 +200,7 @@ def preparar_inmet():
 
     calendario = pd.DataFrame({
         "data": pd.date_range(
-            "2022-01-01", "2025-12-31"
+            "2022-01-01", "2026-12-31"
         )
     })
 
