@@ -14,7 +14,7 @@ PROCESSADOS = BASE / "dados" / "processados"
 BRUTOS.mkdir(parents=True, exist_ok=True)
 PROCESSADOS.mkdir(parents=True, exist_ok=True)
 
-ANOS_BASE = range(2022, 2026)
+ANOS_BASE = range(2022, 2027)
 ANOS_DOWNLOAD = range(2021, 2027)
 ESTACOES = ["A701", "A771"]
 
