@@ -1,6 +1,18 @@
-requests>=2.32,<3
+
+# Manipulação e preparação de dados
 pandas>=2.2,<3
-numpy>=1.26
+numpy>=1.26,<3
+
+# Coleta de dados públicos
+requests>=2.32,<3
+
+# Machine Learning
 scikit-learn>=1.5,<2
+joblib>=1.4,<2
+
+# Gráficos
 matplotlib>=3.9,<4
+
+# Notebook
 jupyterlab>=4,<5
+ipykernel>=6.29,<7
