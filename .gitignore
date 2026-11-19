@@ -127,42 +127,42 @@ Thumbs.db
 # 10. AlertaSP - Dados brutos
 # --------------------------------------------------
 # Arquivos originais baixados do INMET e GeoSampa
-ML/dados/brutos/*
+ml/dados/brutos/*
 
 # Preservar documentacao
-!ML/dados/brutos/.gitkeep
+!ml/dados/brutos/.gitkeep
 
 
 # --------------------------------------------------
 # 11. AlertaSP - Dados processados
 # --------------------------------------------------
 # CSVs gerados pelos scripts de preparacao
-ML/dados/processados/*
-!ML/dados/processados/.gitkeep
+ml/dados/processados/*
+!ml/dados/processados/.gitkeep
 
 
 # --------------------------------------------------
 # 12. AlertaSP - Datasets de modelagem
 # --------------------------------------------------
 # Conjuntos de treino, validacao e teste
-ML/dados/modelagem/*
-!ML/dados/modelagem/.gitkeep
+ml/dados/modelagem/*
+!ml/dados/modelagem/.gitkeep
 
 
 # --------------------------------------------------
 # 13. AlertaSP - Modelos treinados
 # --------------------------------------------------
 # Modelos binarios gerados pelo script 08
-ML/modelos/*.joblib
-ML/modelos/*.pkl
-ML/modelos/*.pickle
+ml/modelos/*.joblib
+ml/modelos/*.pkl
+ml/modelos/*.pickle
 
 
 # --------------------------------------------------
 # 14. AlertaSP - Resultados
 # --------------------------------------------------
 # Mantemos graficos e metricas no GitHub.
-# Nao ignorar a pasta ML/resultados/
+# Nao ignorar a pasta ml/resultados/
 
 
 # --------------------------------------------------
@@ -171,10 +171,10 @@ ML/modelos/*.pickle
 # README.md
 # RELATORIO_ML.md
 # prompts.md
-# ML/dados/README.md
-# ML/requirements.txt
-# ML/requirements-lock.txt (se gerado)
-# ML/treinamento_modelo.ipynb
-# ML/scripts/01 a 09
-# ML/resultados/
+# ml/dados/README.md
+# ml/requirements.txt
+# ml/requirements-lock.txt (se gerado)
+# ml/notebooks/AlertaSP_ML.ipynb
+# ml/scripts/01 a 09
+# ml/resultados/
 

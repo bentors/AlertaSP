@@ -66,7 +66,7 @@ O arquivo contém 12.487 registros de alagamentos e inundações de 2013 a 2026.
 
 A base é mantida por terceiros. Sua correspondência integral com os registros oficiais e a cobertura de 2026 ainda precisam de auditoria independente.
 
-Mais informações: `ML/dados/README.md`.
+Mais informações: `ml/dados/README.md`.
 
 ## Tecnologias
 
@@ -90,10 +90,13 @@ AlertaSP/
 ├── RELATORIO_ML.md
 ├── .gitignore
 │
-└── ML/
+└── ml/
     │
     ├── requirements.txt
-    ├── treinamento_modelo.ipynb
+    ├── requirements-lock.txt
+    │
+    ├── notebooks/
+    │   └── AlertaSP_ML.ipynb        ← notebook executado (entrega)
     │
     ├── scripts/
     │   ├── 01_inspecionar_inmet.py
@@ -108,20 +111,26 @@ AlertaSP/
     │
     ├── dados/
     │   ├── README.md
-    │   ├── brutos/
+    │   ├── brutos/                  (gerada pelos scripts, não versionada)
     │   ├── processados/
     │   └── modelagem/
+    │       ├── treino_2022_2024.csv
+    │       ├── teste_2025.csv
+    │       └── teste_2026_PROVISORIO.csv
     │
     ├── modelos/
     │   └── random_forest_alagamentos.joblib
     │
     └── resultados/
+        ├── 01..03_*.png             (análise exploratória)
+        ├── 08_comparacao_hiperparametros.csv
         ├── 08_metricas_modelo.csv
         ├── 08_matriz_confusao.png
         ├── 08_importancia_features.png
         ├── 09_comparacao_modelos.csv
         ├── 09_curvas_precision_recall.png
-        └── 09_importancia_permutacao.png
+        ├── 09_importancia_permutacao.png
+        └── 10_metricas_notebook.csv
 ```
 
 ### Organização dos diretórios
@@ -131,13 +140,12 @@ AlertaSP/
 | `scripts/` | Coleta, tratamento, treinamento e avaliação |
 | `dados/brutos/` | Arquivos originais baixados |
 | `dados/processados/` | Dados limpos e consolidados |
-| `dados/modelagem/` | Datasets de treino, validação e teste |
+| `dados/modelagem/` | Datasets de treino (2022–2024), teste (2025) e provisório (2026) |
+| `notebooks/` | Notebook executado com o ciclo de treino e avaliação |
 | `modelos/` | Modelo Random Forest treinado |
 | `resultados/` | Gráficos e métricas dos experimentos |
 
-O notebook executado também faz parte da entrega de ML. Ele pode estar na pasta `ML/` ou em `ML/notebooks/`, conforme sua organização no repositório.
-
-As pastas com dados intermediários e modelos são geradas pelos scripts. Os arquivos grandes não precisam ser versionados.
+Os dados processados, os datasets de modelagem e o modelo treinado estão versionados para que o notebook rode sem baixar nada. Os arquivos brutos (ZIPs do INMET) são baixados pelos scripts e não são versionados.
 
 ## Requisitos para execução
 
@@ -166,9 +174,9 @@ Substitua `<URL_DO_REPOSITORIO>` pela URL HTTPS exibida em Code → HTTPS no Git
 Na raiz do repositório:
 
 ```bash
-python3 -m venv ML/.venv
-source ML/.venv/bin/activate
-cd ML
+python3 -m venv ml/.venv
+source ml/.venv/bin/activate
+cd ml
 ```
 
 ### Windows — PowerShell
@@ -176,16 +184,16 @@ cd ML
 Na raiz do repositório:
 
 ```powershell
-py -3 -m venv ML\.venv
-.\ML\.venv\Scripts\Activate.ps1
-cd ML
+py -3 -m venv ml\.venv
+.\ml\.venv\Scripts\Activate.ps1
+cd ml
 ```
 
-Caso a ativação seja bloqueada pelo PowerShell, é possível executar diretamente `ML\.venv\Scripts\python.exe` a partir da raiz, sem ativar o ambiente.
+Caso a ativação seja bloqueada pelo PowerShell, é possível executar diretamente `ml\.venv\Scripts\python.exe` a partir da raiz, sem ativar o ambiente.
 
 ## 3. Instalar dependências
 
-Os comandos seguintes devem ser executados dentro da pasta `ML`, com o ambiente virtual ativo:
+Os comandos seguintes devem ser executados dentro da pasta `ml`, com o ambiente virtual ativo:
 
 ```bash
 python -m pip install --upgrade pip
@@ -254,7 +262,7 @@ Os dados de 2026 são limitados a uma data provisória, definida conforme as fon
 
 ### Script 07 — Feature Engineering
 
-Calcula as 12 variáveis de entrada e separa os dados em treino, validação e teste provisório.
+Calcula as 12 variáveis de entrada e separa os dados em treino (2022–2024), teste (2025) e conjunto provisório (2026).
 
 ```bash
 python scripts/07_preparar_features.py
@@ -278,7 +286,7 @@ python scripts/09_avaliar_modelo.py
 
 ### Executar toda a sequência de uma vez
 
-No macOS/Linux, dentro de `ML`:
+No macOS/Linux, dentro de `ml`:
 
 ```bash
 set -e
@@ -297,7 +305,7 @@ O comando interrompe a sequência caso algum script apresente erro.
 
 ## 5. Executar o notebook
 
-Abra o notebook do projeto no VS Code ou JupyterLab.
+Abra o notebook `ml/notebooks/AlertaSP_ML.ipynb` no VS Code ou JupyterLab. Ele já está salvo com as saídas da execução.
 
 Para iniciar o JupyterLab:
 
@@ -305,17 +313,17 @@ Para iniciar o JupyterLab:
 python -m jupyter lab
 ```
 
-Selecione o interpretador da pasta `ML/.venv` e execute as células de cima para baixo.
+Selecione o interpretador da pasta `ml/.venv` e execute as células de cima para baixo.
 
 O notebook apresenta:
+- Pergunta de ML, fontes de dados e divisão temporal
 - Carregamento dos dados preparados
-- Modelo Random Forest
-- Busca de hiperparâmetros
-- Validação cruzada temporal
-- Métricas de treino e validação
-- Matriz de confusão
-- Curva Precision-Recall
+- Escolha justificada do Random Forest
+- Busca de 12 combinações de hiperparâmetros com validação cruzada temporal (só no treino)
+- Métricas de treino e teste lado a lado e discussão de overfitting
+- Matriz de confusão e curva Precision-Recall
 - Importância das variáveis
+- Conclusão para o cidadão
 
 ## Metodologia de treinamento
 
@@ -324,7 +332,7 @@ Períodos utilizados:
 | Período | Finalidade |
 |---|---|
 | 2022–2024 | Treinamento e validação cruzada |
-| 2025 | Avaliação temporal externa |
+| 2025 | Teste (avaliação final, fora da busca de hiperparâmetros) |
 | 2026 | Conjunto provisório, não utilizado nas métricas finais |
 
 Algoritmo: Random Forest Classifier.
@@ -347,7 +355,7 @@ Melhores hiperparâmetros:
 - `max_depth=5`
 - `min_samples_leaf=5`
 
-| Métrica | Treino | Validação 2025 |
+| Métrica | Treino | Teste 2025 |
 |---|---:|---:|
 | Accuracy | 0,8161 | 0,7527 |
 | Precision | 0,6427 | 0,4803 |
@@ -367,7 +375,7 @@ Na avaliação de 2025, o modelo identificou 61 dos 85 dias com ocorrências reg
 3. Ausência de registro não garante ausência de alagamento.
 4. O CSV de ocorrências é derivado de fontes públicas e publicado por terceiros.
 5. A cobertura dos dados de 2026 ainda não foi validada.
-6. O modelo apresenta perda de desempenho entre treino e validação.
+6. O modelo apresenta perda de desempenho entre treino e teste.
 7. O experimento não deve ser utilizado isoladamente para emitir alertas oficiais de emergência.
 
 ## Reprodução dos resultados
@@ -381,8 +389,8 @@ Para reprodução exata, é necessário preservar as versões dos arquivos de en
 ## Documentação adicional
 
 - `RELATORIO_ML.md`: metodologia, resultados e conclusões
-- `ML/dados/README.md`: origem e tratamento dos dados
-- `ML/resultados/`: gráficos, métricas e comparações
+- `ml/dados/README.md`: origem e tratamento dos dados
+- `ml/resultados/`: gráficos, métricas e comparações
 - Notebook executado: demonstração do ciclo completo de ML
 
 ## Objetivos de Desenvolvimento Sustentável
