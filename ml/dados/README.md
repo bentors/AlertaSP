@@ -158,7 +158,7 @@ As precipitações acumuladas são calculadas somente com o dia atual e os dias 
 | Conjunto | Amostras | Positivas |
 |---|---:|---:|
 | Treino 2022–2024 | 1.093 | 324 |
-| Validação 2025 | 364 | 85 |
+| Teste 2025 | 364 | 85 |
 | Teste provisório 2026 | 183 | 69 |
 
 Os dados de 2026 não participaram do treinamento nem das métricas finais apresentadas.
@@ -171,11 +171,11 @@ Os dados ausentes são mantidos como NaN durante a preparação.
 
 No treinamento, utiliza-se SimpleImputer(strategy="median"), ajustado apenas aos dados do respectivo conjunto de treinamento.
 
-Isso evita calcular valores de substituição utilizando informações da validação.
+Isso evita calcular valores de substituição utilizando informações do teste.
 
 ## 9. Reproduzir os datasets
 
-Dentro da pasta `ML`, com o ambiente virtual ativo:
+Dentro da pasta `ml`, com o ambiente virtual ativo:
 
 ```bash
 python scripts/01_inspecionar_inmet.py

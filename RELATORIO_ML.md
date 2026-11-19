@@ -64,10 +64,10 @@ O tratamento de valores ausentes foi realizado por imputação de mediana dentro
 | Conjunto | Período | Amostras |
 |---|---|---:|
 | Treino | 2022–2024 | 1.093 |
-| Validação externa | 2025 | 364 |
-| Teste provisório | 2026 | 183 |
+| Teste | 2025 | 364 |
+| Provisório (não usado) | 2026 | 183 |
 
-A divisão temporal evita o embaralhamento aleatório de observações de diferentes períodos.
+A divisão temporal evita o embaralhamento aleatório de observações de diferentes períodos. O ano de 2025 funciona como **conjunto de teste**: não participa do treinamento nem da escolha dos hiperparâmetros, e só é usado uma vez, na avaliação final.
 
 ## 4. Modelo e treinamento
 
@@ -91,11 +91,32 @@ A métrica principal para selecionar a configuração foi Average Precision (AP)
 - max_depth = 5
 - min_samples_leaf = 5
 
-A Average Precision média na validação cruzada foi **0,6463**.
+A Average Precision média na validação cruzada foi **0,6463** (0,6466 na reexecução do notebook com scikit-learn 1.8; a diferença vem da versão da biblioteca e não altera a escolha nem as métricas finais).
+
+### Comparação das 12 combinações (validação cruzada no treino)
+
+| max_depth | min_samples_leaf | n_estimators | AP treino | AP validação cruzada | Ranking |
+|---:|---:|---:|---:|---:|---:|
+| 5 | 5 | 300 | 0,8966 | 0,6463 | 1 |
+| 5 | 5 | 100 | 0,8950 | 0,6453 | 2 |
+| 10 | 5 | 100 | 0,9461 | 0,6452 | 3 |
+| 10 | 5 | 300 | 0,9485 | 0,6441 | 4 |
+| 5 | 5 | 200 | 0,8957 | 0,6433 | 5 |
+| 10 | 5 | 200 | 0,9479 | 0,6423 | 6 |
+| 5 | 2 | 300 | 0,9200 | 0,6421 | 7 |
+| 5 | 2 | 200 | 0,9203 | 0,6377 | 8 |
+| 5 | 2 | 100 | 0,9181 | 0,6371 | 9 |
+| 10 | 2 | 100 | 0,9952 | 0,6207 | 10 |
+| 10 | 2 | 200 | 0,9965 | 0,6202 | 11 |
+| 10 | 2 | 300 | 0,9960 | 0,6184 | 12 |
+
+Fonte: `ml/resultados/08_comparacao_hiperparametros.csv`.
+
+As árvores mais profundas e com folhas pequenas (`max_depth=10`, `min_samples_leaf=2`) praticamente decoram o treino (AP ≈ 0,99), mas ficam nas últimas posições da validação cruzada. O `min_samples_leaf` foi o hiperparâmetro mais decisivo, e o `n_estimators` teve efeito pequeno.
 
 ## 5. Resultados
 
-| Métrica | Treinamento | Validação 2025 |
+| Métrica | Treinamento | Teste 2025 |
 |---|---:|---:|
 | Accuracy | 0,8161 | 0,7527 |
 | Precision | 0,6427 | 0,4803 |
@@ -119,6 +140,10 @@ O modelo identificou 61 dos 85 dias com ocorrências registradas, correspondendo
 
 Entretanto, a precision de 48,03% indica quantidade relevante de falsos positivos.
 
+![Matriz de confusão — Teste 2025](ml/resultados/08_matriz_confusao.png)
+
+![Curvas Precision-Recall — 2025](ml/resultados/09_curvas_precision_recall.png)
+
 ### Comparação entre conjuntos de variáveis
 
 | Modelo | Average Precision |
@@ -131,9 +156,11 @@ O modelo completo apresentou melhor desempenho, sugerindo que a combinação de 
 
 A importância por permutação destacou a sazonalidade, a temperatura em Interlagos e a precipitação acumulada no Mirante.
 
+![Importância por permutação — 2025](ml/resultados/09_importancia_permutacao.png)
+
 ## 6. Overfitting e limitações
 
-A Average Precision caiu de 0,8341 no treinamento para 0,6237 na validação externa.
+A Average Precision caiu de 0,8341 no treinamento para 0,6237 no teste de 2025.
 
 Essa diferença indica perda de generalização, compatível com algum grau de overfitting e possíveis diferenças na distribuição dos dados entre os períodos.
 
@@ -154,7 +181,7 @@ A ausência de registro não comprova ausência de alagamento. Além disso, as p
 
 O experimento demonstrou que é possível identificar padrões relacionados a registros futuros de alagamentos utilizando Machine Learning e dados históricos reais.
 
-O Random Forest apresentou desempenho superior às referências avaliadas, com ROC-AUC de 0,8315 e Average Precision de 0,6237 na validação temporal de 2025.
+O Random Forest apresentou desempenho superior às referências avaliadas, com ROC-AUC de 0,8315 e Average Precision de 0,6237 no teste temporal de 2025.
 
 Apesar dos resultados promissores, a quantidade de falsos positivos e falsos negativos evidencia a necessidade de melhorias e validação adicional.
 

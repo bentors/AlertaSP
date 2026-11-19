@@ -56,7 +56,7 @@ def carregar_dados():
     )
 
     validacao = pd.read_csv(
-        DADOS / "validacao_2025.csv",
+        DADOS / "teste_2025.csv",
         parse_dates=["data"]
     )
 

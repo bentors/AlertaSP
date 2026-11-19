@@ -59,7 +59,7 @@ def carregar_dados():
     )
 
     validacao = pd.read_csv(
-        DADOS / "validacao_2025.csv",
+        DADOS / "teste_2025.csv",
         parse_dates=["data"],
     )
 
@@ -68,12 +68,12 @@ def carregar_dados():
 
     if treino["data"].max() >= validacao["data"].min():
         raise ValueError(
-            "Treino e validação possuem períodos sobrepostos."
+            "Treino e teste possuem períodos sobrepostos."
         )
 
     for nome, df in [
         ("treino", treino),
-        ("validação", validacao),
+        ("teste", validacao),
     ]:
         faltantes = set(FEATURES + [ALVO]) - set(df.columns)
 
@@ -235,7 +235,7 @@ def gerar_graficos(modelo, y_validacao, previsoes):
         cmap="Blues",
     )
 
-    ax.set_title("Random Forest — Validação 2025")
+    ax.set_title("Random Forest — Teste 2025")
 
     fig.tight_layout()
     fig.savefig(
@@ -274,7 +274,7 @@ def main():
     X_treino, y_treino, X_val, y_val = carregar_dados()
 
     print("\nTreinamento:", len(X_treino), "amostras")
-    print("Validação:", len(X_val), "amostras")
+    print("Teste 2025:", len(X_val), "amostras")
     print("Features:", len(FEATURES))
 
     modelo = treinar_modelo(X_treino, y_treino)
@@ -284,7 +284,7 @@ def main():
     )
 
     metricas_val, previsoes_val = avaliar_modelo(
-        modelo, X_val, y_val, "Validação 2025"
+        modelo, X_val, y_val, "Teste 2025"
     )
 
     comparacao = pd.DataFrame([
@@ -292,7 +292,7 @@ def main():
         metricas_val,
     ])
 
-    print("\n=== COMPARAÇÃO TREINO X VALIDAÇÃO ===")
+    print("\n=== COMPARAÇÃO TREINO X TESTE ===")
     print(comparacao.round(4).to_string(index=False))
 
     comparacao.to_csv(
